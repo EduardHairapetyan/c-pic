@@ -455,7 +455,7 @@ VOID formatHex(UINT32 num, INT32 fieldWidth, INT32 uppercase, PCHAR s, INT32* j,
 }
 
 // Custom vsprintf function implementation
-INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
+INT32 String_FormatV(PCHAR s, PCHAR format, VA_LIST args) {
  
     INT32 i = 0, j = 0; // Index for the format string and output string
     INT32 precision = 6;  // Default precision for floating-point numbers
@@ -511,7 +511,7 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
             // Now switch based on the conversion specifier
             if (format[i] == 'X') {
                 i++;  // Skip 'X'
-                UINT32 num = (UINT32)va_arg(args, UINT32);
+                UINT32 num = (UINT32)VA_ARG(args, UINT32);
                 // Format the number as uppercase hexadecimal.
                 formatHex(num, fieldWidth, 1, s, &j, zeroPad, addPrefix);
 
@@ -524,26 +524,26 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
             }
             // NOTE: making specifiers lowercase to handle both cases (e.g., %d and %D), that's why we use TO_LOWER_CASE macro
             else if (TO_LOWER_CASE(format[i]) == 'd') {  // Handle %d (signed integer) : 
-                INT32 num = va_arg(args, INT32); // Get the next argument as an INT32
+                INT32 num = VA_ARG(args, INT32); // Get the next argument as an INT32
                 intToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the integer to string with specified formatting
                 i++; // Skip 'd'
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == 'u') {  // Handle %u (unsigned integer)
-                UINT32 num = va_arg(args, UINT32); // Get the next argument as an UINT32
+                UINT32 num = VA_ARG(args, UINT32); // Get the next argument as an UINT32
                 uintToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the unsigned integer to string with specified formatting
                 i++; // Skip 'u'
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == 'x') {  // Handle %x (hexadecimal, lowercase)
                 i++;  // Skip 'x'
-                UINT32 num = va_arg(args, UINT32); // Get the next argument as an UINT32
+                UINT32 num = VA_ARG(args, UINT32); // Get the next argument as an UINT32
                 formatHex(num, fieldWidth, 0, s, &j, zeroPad, addPrefix); // Convert the number to lowercase hexadecimal with specified formatting
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == 'p') {  // Handle %p (pointer)
                 i++; // Skip 'p'
-                ptrToHex(va_arg(args, PVOID), s, &j); // Convert the pointer address to hexadecimal string
+                ptrToHex(VA_ARG(args, PVOID), s, &j); // Convert the pointer address to hexadecimal string
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == 'c') {  // Handle %c (character)
@@ -551,13 +551,13 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
                 for (INT32 k = 0; k < fieldWidth - 1; k++) {
                     s[j++] = ' '; // Add spaces for field width
                 }
-                s[j++] = (CHAR)va_arg(args, INT32); // Get the next argument as an INT32 (character) and add it to the string
+                s[j++] = (CHAR)VA_ARG(args, INT32); // Get the next argument as an INT32 (character) and add it to the string
                 i++; // Skip 'c'
                 continue;
             }
             else if (TO_LOWER_CASE(format[i]) == 's' ) {  // Handle %s (narrow string)
                 i++; // Skip 's'
-                PCHAR str = va_arg(args, PCHAR); // Get the next argument as a PCHAR (narrow string)
+                PCHAR str = VA_ARG(args, PCHAR); // Get the next argument as a PCHAR (narrow string)
                 // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                 if(str == NULL) { 
                     str = ((CHAR[]){'(','n','u','l','l',')','\0'});  // Handle null string case
@@ -588,7 +588,7 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
             else if (TO_LOWER_CASE(format[i]) == 'w') {  // Handle %ws (wide string)
                 if (TO_LOWER_CASE(format[i+1]) == 's') {
                     i += 2; // Skip over "ws"
-                    PWCHAR wstr = va_arg(args, PWCHAR); // Get the next argument as a PWCHAR (wide string)
+                    PWCHAR wstr = VA_ARG(args, PWCHAR); // Get the next argument as a PWCHAR (wide string)
                     // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                     if(wstr == NULL) {
                         wstr = ((WCHAR[]){L'(',L'n',L'u',L'l',L'l',L')',L'\0'});  // Handle null wide string case
@@ -605,7 +605,7 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
             else if (TO_LOWER_CASE(format[i]) == 'l') {
                 if (TO_LOWER_CASE(format[i+1]) == 's') {
                     i += 2; // Skip over "ls"
-                    PWCHAR wstr = va_arg(args, PWCHAR); // Get the next argument as a PWCHAR (wide string)
+                    PWCHAR wstr = VA_ARG(args, PWCHAR); // Get the next argument as a PWCHAR (wide string)
                     // C standard does not allow NULL strings, so if the string is NULL, handle it by printing "(null)".
                     if(wstr == NULL) {
                         wstr = ((WCHAR[]){L'(',L'n',L'u',L'l',L'l',L')',L'\0'});  // Handle null wide string case
@@ -616,31 +616,31 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
                 // Handle other long variants (lf, ld, lu, lld)
                 else if (TO_LOWER_CASE(format[i+1]) == 'f') {  // long double (%lf)
                     i += 2; // Skip over "lf"
-                    long double num = va_arg(args, long double); // Get the next argument as a long double
+                    long double num = VA_ARG(args, long double); // Get the next argument as a long double
                     doubleToStr(num, s, &j, precision, fieldWidth, zeroPad); // Convert the long double to string with specified formatting
                     continue;
                 }
                 else if (TO_LOWER_CASE(format[i+1]) == 'd') {  // long int (%ld)
                     i += 2; // Skip over "ld"
-                    INT32 num = va_arg(args, INT32); // Get the next argument as an INT32 (long int)
+                    INT32 num = VA_ARG(args, INT32); // Get the next argument as an INT32 (long int)
                     intToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the long int to string with specified formatting
                     continue;
                 }
                 else if (TO_LOWER_CASE(format[i+1]) == 'u') {  // unsigned long int (%lu)
                     i += 2; // Skip over "lu"
-                    UINT32 num = va_arg(args, UINT32); // Get the next argument as an UINT32 (unsigned long int)
+                    UINT32 num = VA_ARG(args, UINT32); // Get the next argument as an UINT32 (unsigned long int)
                     uintToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the unsigned long int to string with specified formatting
                     continue;
                 }
                 else if (TO_LOWER_CASE(format[i + 1]) == 'l' && TO_LOWER_CASE(format[i + 2]) == 'd') {  // long long int (%lld)
                     i += 3; // Skip over "lld"
-                    INT64 num = va_arg(args, INT64); // Get the next argument as an INT64 (long long int)
+                    INT64 num = VA_ARG(args, INT64); // Get the next argument as an INT64 (long long int)
                     intToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the long long int to string with specified formatting
                     continue;
                 }
                 else if(TO_LOWER_CASE(format[i+1]) == 'l' && TO_LOWER_CASE(format[i+2]) == 'u'){
                     i += 3; // Skip over "llu"
-                    UINT64 num = va_arg(args, UINT64); // Get the next argument as an UINT64 (unsigned long long int)
+                    UINT64 num = VA_ARG(args, UINT64); // Get the next argument as an UINT64 (unsigned long long int)
                     uintToStr(num, s, &j, fieldWidth, zeroPad, leftAlign); // Convert the unsigned long long int to string with specified formatting
                     continue;
                 }
@@ -651,7 +651,7 @@ INT32 String_FormatV(PCHAR s, PCHAR format, va_list args) {
             }
             else if (TO_LOWER_CASE(format[i]) == 'f') {  // Handle %f (double)
                 i++; // Skip 'f'
-                DOUBLE num = va_arg(args, DOUBLE); // Get the next argument as a DOUBLE
+                DOUBLE num = VA_ARG(args, DOUBLE); // Get the next argument as a DOUBLE
                 doubleToStr(num, s, &j, precision, fieldWidth, zeroPad); // Convert the double to string with specified formatting
                 continue;
             }

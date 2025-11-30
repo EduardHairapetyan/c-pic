@@ -16,6 +16,6 @@ BOOL CompareWideStringIgnoreCase(const PWCHAR s1, const PWCHAR s2);
 // Get the length of a null-terminated string
 USIZE GetStringLength(const PCHAR str);
 
-INT32 String_FormatV(PCHAR s, PCHAR format, va_list args);
+INT32 String_FormatV(PCHAR s, PCHAR format, VA_LIST args);
 
 #endif // __STRING_H__

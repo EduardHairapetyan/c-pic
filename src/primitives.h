@@ -55,9 +55,9 @@ typedef double DOUBLE, * PDOUBLE;
     typedef INT32 SSIZE , * PSSIZE;
 #endif 
 
-#define va_list                 __builtin_va_list
-#define va_start(ap, v)			__builtin_va_start(ap, v)
-#define va_arg(ap, t)			__builtin_va_arg(ap, t)
-#define va_end(ap)				__builtin_va_end(ap)
+#define VA_LIST                 __builtin_va_list
+#define VA_START(ap, v)			__builtin_va_start(ap, v)
+#define VA_ARG(ap, t)			__builtin_va_arg(ap, t)
+#define VA_END(ap)				__builtin_va_end(ap)
 
 #endif // __PRIMITIVES_H__

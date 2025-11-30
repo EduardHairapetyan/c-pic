@@ -3,7 +3,7 @@ PHDRS {
 }
 
 SECTIONS {
-    .text :
+    .text : ALIGN(1) SUBALIGN(1)
     {
         KEEP(*(.text$main)) /* Simple hack to keep main at the start of .text section */
         *(.text*)           /* Rest of the .text section */
